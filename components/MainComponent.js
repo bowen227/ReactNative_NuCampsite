@@ -4,6 +4,7 @@ import CampsiteInfo from "./CampsiteInfoComponent";
 import About from "./AboutComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
+import Reservation from "./ReservationComponent";
 import {
   View,
   Platform,
@@ -138,6 +139,31 @@ const HomeNavigator = createStackNavigator(
   }
 );
 
+const ReservationNavigator = createStackNavigator(
+  {
+    Reservation: { screen: Reservation },
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#5637DD",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="tree"
+          type="font-awesome"
+          iconStyle={styles.stackIcon}
+          onPress={() => navigation.toggleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+
 const CustomDrawerContentComponent = (props) => (
   <ScrollView>
     <SafeAreaView
@@ -147,7 +173,7 @@ const CustomDrawerContentComponent = (props) => (
       <View style={styles.drawerHeader}>
         <View style={{ flex: 1 }}>
           <Image
-            source={require("./public/images/logo.png")}
+            source={require("./images/logo.png")}
             style={styles.drawerImage}
           />
         </View>
@@ -175,6 +201,15 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerIcon: ({ tintColor }) => (
           <Icon name="list" type="font-awesome" size={24} color={tintColor} />
+        ),
+      },
+    },
+    Reservation: {
+      screen: ReservationNavigator,
+      drawerLabel: "Reserve Campsite",
+      navigationOptions: {
+        drawerIcon: ({ tintColor }) => (
+          <Icon name="tree" type="font-awesome" size={24} color={tintColor} />
         ),
       },
     },

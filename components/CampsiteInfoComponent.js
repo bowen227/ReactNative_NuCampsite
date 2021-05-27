@@ -7,6 +7,8 @@ import {
   Modal,
   Button,
   StyleSheet,
+  Alert,
+  PanResponder,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
 import { connect } from "react-redux";
@@ -30,9 +32,56 @@ const mapDispatchToProps = {
 
 function RenderCampsite(props) {
   const { campsite, favorite, markFavorite } = props;
+
+  const view = React.createRef();
+
+  const recongizeDrag = ({ dx }) => (dx < -200 ? true : false);
+
+  const panResponer = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => {
+      view.current
+        .rubberBand(1000)
+        .then((endState) =>
+          console.log(endState.finished ? "Finished" : "Canceled")
+        );
+    },
+    onPanResponderEnd: (e, gesterState) => {
+      console.log("pann responder end", gesterState);
+      if (recongizeDrag(gesterState)) {
+        Alert.alert(
+          "Add Favorite",
+          "Are you sure you wish to add " + campsite.name + " to favorite?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+              onPress: () => console.log("Cancel Pressed"),
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                props.favorite
+                  ? console.log("Already set as a favorite")
+                  : props.markFavorite(),
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+      return true;
+    },
+  });
+
   if (campsite) {
     return (
-      <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+      <Animatable.View
+        {...panResponer.panHandlers}
+        animation="fadeInDown"
+        duration={2000}
+        delay={1000}
+        ref={view}
+      >
         <Card
           featuredTitle={campsite.name}
           image={{ uri: baseUrl + campsite.image }}

@@ -36,6 +36,7 @@ function RenderCampsite(props) {
   const view = React.createRef();
 
   const recongizeDrag = ({ dx }) => (dx < -200 ? true : false);
+  const recognizeComment = ({ dx }) => (dx > 200 ? true : false);
 
   const panResponer = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -48,6 +49,9 @@ function RenderCampsite(props) {
     },
     onPanResponderEnd: (e, gesterState) => {
       console.log("pann responder end", gesterState);
+      if (recognizeComment(gesterState)) {
+        props.onShowModal();
+      }
       if (recongizeDrag(gesterState)) {
         Alert.alert(
           "Add Favorite",
